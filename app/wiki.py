@@ -1,3 +1,5 @@
+import time
+
 import wikipedia
 import sys
 import os
@@ -31,6 +33,7 @@ def choose_language():
                 print("Nie ma takiego języka")
     os.system('clear')
 
+
 def show_languages(languages):
     i = 1
 
@@ -50,19 +53,30 @@ def search():
     print("\n\n")
 
 
+def print_slow(text):
+    for char in text:
+        time.sleep(.05)
+        print(char, end='')
+        sys.stdout.flush()
+
+
 def summary():
     i = 1
     quary = input("Wpisz nazwę strony jakiej streszczenie chcesz otrzymać: ")
+
     try:
+        os.system('clear')
         text = wikipedia.summary(quary)
-        print(text)
+        print_slow(text)
+        print('\n')
     except wikipedia.exceptions.DisambiguationError as e:
         options = e.options
+        os.system('clear')
         print("Twój wybór nie jest jednoznaczny, wybierz jedną z możliwosći: ")
         for element in options:
             print("{}. {}".format(i, element))
             i += 1
-        choosen_article = input("Podaj numer do wyświetlenia")
+        choosen_article = input("Podaj numer do wyświetlenia: ")
         print(wikipedia.summary(options[int(choosen_article) - 1]))
 
 
@@ -84,7 +98,8 @@ def print_random_page():
         elif user_input == '2':
             os.system('clear')
             summary = BeautifulSoup(page.summary, 'html.parser')
-            print(summary)
+            print_slow(summary.text)
+            print('\n')
         elif user_input == '3':
             os.system('clear')
             break
