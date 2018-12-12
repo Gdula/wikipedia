@@ -1,5 +1,4 @@
 import time
-
 import wikipedia
 import sys
 import os
@@ -50,7 +49,34 @@ def search():
     for element in elements:
         print("{}. {}".format(i, element))
         i += 1
-    print("\n\n")
+
+    index_of_search = input("Podaj numer, który chcesz wyświetlić")
+    page = elements[int(index_of_search) - 1]
+    get_page(page)
+
+
+def get_page(page):
+    soup1 = BeautifulSoup(page, 'html.parser')
+    soup2 = wikipedia.page(soup1)
+    print("Wylosowałeś: {}".format(soup1))
+    while True:
+        user_input = input("Co chcesz zobaczyć na stronie?:\n"
+                           "[1]. Pokaż kategorię\n"
+                           "[2]. Wyświetl streszczenie\n"
+                           "[3]. Powrót\n")
+        if user_input == '1':
+            os.system('clear')
+            categories = soup2.categories
+            for category in categories:
+                print(category + '\n')
+        elif user_input == '2':
+            os.system('clear')
+            summary = BeautifulSoup(soup2.summary, 'html.parser')
+            print_slow(summary.text)
+            print('\n')
+        elif user_input == '3':
+            os.system('clear')
+            break
 
 
 def print_slow(text):
@@ -83,13 +109,13 @@ def summary():
 def print_random_page():
     random_page = wikipedia.random(pages=1)
     soup1 = BeautifulSoup(random_page, 'html.parser')
-    page = wikipedia.page(random_page)
+    page = wikipedia.page(soup1)
     print("Wylosowałeś: {}".format(soup1))
     while True:
         user_input = input("Co chcesz zobaczyć na stronie?:\n"
                            "[1]. Pokaż kategorię\n"
                            "[2]. Wyświetl streszczenie\n"
-                           "[3]. Powrót")
+                           "[3]. Powrót\n")
         if user_input == '1':
             os.system('clear')
             categories = page.categories
