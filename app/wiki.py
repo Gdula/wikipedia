@@ -1,10 +1,12 @@
 import wikipedia
 import sys
 import os
+from bs4 import BeautifulSoup
 
 
 def choose_language():
-    user_input = input("[1]. Wpisz kod WP swojego języka(en, pl, de, etc.)\n[2]. Wybierz język z listy\n")
+    user_input = input("[1]. Wpisz kod WP swojego języka(en, pl, de, etc.)\n"
+                       "[2]. Wybierz język z listy\n")
     language_choosen = False
     languages = wikipedia.languages()
 
@@ -27,11 +29,10 @@ def choose_language():
                         language_choosen = True
             else:
                 print("Nie ma takiego języka")
-
+    os.system('clear')
 
 def show_languages(languages):
     i = 1
-    languages = wikipedia.languages()
 
     for key, value in languages.items():
         print("{}. {}".format(i, value))
@@ -49,16 +50,12 @@ def search():
     print("\n\n")
 
 
-def suggest():
-    quary = input("Co chcesz dospasowac?: ")
-    print(wikipedia.suggest(quary))
-
-
 def summary():
     i = 1
-    quary = input("Co chcesz wyszukać?: ")
+    quary = input("Wpisz nazwę strony jakiej streszczenie chcesz otrzymać: ")
     try:
         text = wikipedia.summary(quary)
+        print(text)
     except wikipedia.exceptions.DisambiguationError as e:
         options = e.options
         print("Twój wybór nie jest jednoznaczny, wybierz jedną z możliwosći: ")
@@ -70,14 +67,38 @@ def summary():
 
 
 def print_random_page():
-    print(wikipedia.random(pages=1))
+    random_page = wikipedia.random(pages=1)
+    soup1 = BeautifulSoup(random_page, 'html.parser')
+    page = wikipedia.page(random_page)
+    print("Wylosowałeś: {}".format(soup1))
+    while True:
+        user_input = input("Co chcesz zobaczyć na stronie?:\n"
+                           "[1]. Pokaż kategorię\n"
+                           "[2]. Wyświetl streszczenie\n"
+                           "[3]. Powrót")
+        if user_input == '1':
+            os.system('clear')
+            categories = page.categories
+            for category in categories:
+                print(category + '\n')
+        elif user_input == '2':
+            os.system('clear')
+            summary = BeautifulSoup(page.summary, 'html.parser')
+            print(summary)
+        elif user_input == '3':
+            os.system('clear')
+            break
 
 
 def print_main_menu():
-    print("[1]. Wyszukaj\n[2]. Streszczenie artukułu\n[3]. Dopasuj zapytanie\n[4]. Losowa strona\n[0]. Wyjście\n")
+    print("[1]. Wyszukaj strone\n"
+          "[2]. Pokaż streszczenie strony\n"
+          "[3]. Losowa strona\n"
+          "[0]. Wyjście\n")
 
 
 def main():
+    os.system('clear')
     choose_language()
 
     while True:
@@ -88,10 +109,10 @@ def main():
             os.system('clear')
             search()
         elif user_input == '2':
+            os.system('clear')
             summary()
         elif user_input == '3':
-            suggest()
-        elif user_input == '4':
+            os.system('clear')
             print_random_page()
         elif user_input == '0':
             sys.exit()
@@ -99,3 +120,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
